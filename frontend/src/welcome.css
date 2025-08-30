@@ -1,0 +1,114 @@
+/* Layout */
+/* Reset default margins & padding */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.welcome-container {
+  display: flex;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+  position: relative;
+}
+
+/* Toggle Button */
+.toggle-btn {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: #2575fc;
+  color: #fff;
+  font-size: 22px;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  z-index: 1000;
+  transition: background 0.3s ease;
+}
+
+.toggle-btn:hover {
+  background: #1a5ad7;
+}
+
+/* Sidebar */
+.welcome-sidebar {
+  width: 220px;
+  background: #1a1a2e;
+  color: #fff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: -260px;
+  /* -240px ke jagah -220px rakho */
+  height: 100%;
+  transition: left 0.3s ease;
+  z-index: 999;
+}
+
+
+.welcome-sidebar.open {
+  left: 0;
+  /* show when open */
+}
+
+.welcome-logo {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  text-align: center;
+  color: #00c6ff;
+}
+
+.welcome-sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.welcome-sidebar ul li {
+  padding: 12px 15px;
+  margin: 8px 0;
+  background: #16213e;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.welcome-sidebar ul li:hover {
+  background: #00c6ff;
+  color: #000;
+}
+
+/* Main Content */
+.welcome-content {
+  flex: 1;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.welcome-box {
+  background: #fff;
+  padding: 3rem;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+}
+
+.welcome-box h1 {
+  font-size: 26px;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.welcome-box p {
+  color: #666;
+  font-size: 16px;
+}

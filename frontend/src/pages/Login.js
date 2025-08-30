@@ -1,29 +1,41 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom"; // 👈 combine imports
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import axios from "axios";
+import ReCAPTCHA from "react-google-recaptcha"; 
+import { ToastContainer, toast } from "react-toastify"; // ✅ toast import
+import "react-toastify/dist/ReactToastify.css"; 
 import "../auth.css";
 
 const Login = () => {
-  const navigate = useNavigate(); // 👈 hook must be inside component
+  const navigate = useNavigate();
+  const [captchaToken, setCaptchaToken] = useState(null);
 
   const formik = useFormik({
     initialValues: { email: "", password: "" },
     onSubmit: async (values) => {
-      try {
-        const res = await axios.post("http://localhost:5000/auth/login", values);
-        alert(res.data.message);
+      if (!captchaToken) {
+        toast.warning("⚠️ Please verify captcha!"); // ✅ warning toast
+        return;
+      }
 
-        // backend se user data save kar sakte ho localStorage me
+      try {
+        const res = await axios.post("http://localhost:5000/auth/login", {
+          ...values,
+          captcha: captchaToken,
+        });
+
+        toast.success(res.data.message); // ✅ success toast
+
         localStorage.setItem("user", JSON.stringify(res.data.user));
 
-        // login success hone par welcome page pe redirect
-        navigate("/welcome");
+        // thoda delay tak toast dikhane ke liye
+        setTimeout(() => navigate("/welcome"), 1500);
       } catch (err) {
         if (err.response) {
-          alert(err.response.data.error || "Login failed");
+          toast.error(err.response.data.error || "Login failed"); // ❌ error toast
         } else {
-          alert("Server error");
+          toast.error("Server error");
         }
       }
     },
@@ -48,8 +60,16 @@ const Login = () => {
             value={formik.values.password}
             onChange={formik.handleChange}
           />
+
+          {/* ✅ Google reCAPTCHA */}
+          <ReCAPTCHA
+            sitekey="6LfjibArAAAAALCy8yOKjcVoAmlbQRBEkki3Vc6P" 
+            onChange={(token) => setCaptchaToken(token)}
+          />
+
           <button type="submit">Login</button>
         </form>
+
         <p>
           Don’t have an account? <Link to="/signup">Signup</Link>
         </p>
@@ -57,8 +77,13 @@ const Login = () => {
           <Link to="/forgot-password">Forgot Password?</Link>
         </p>
       </div>
+
+      {/* ✅ Toast container */}
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };
 
 export default Login;
+
+

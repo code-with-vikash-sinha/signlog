@@ -1,4 +1,3 @@
-// src/pages/ResetPassword.js
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -10,9 +9,9 @@ const ResetPassword = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Mail link se email query parameter get karenge
+  // Token query parameter from URL
   const query = new URLSearchParams(location.search);
-  const email = query.get("email");
+  const token = query.get("token");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,11 +23,10 @@ const ResetPassword = () => {
 
     try {
       const res = await axios.post("http://localhost:5000/auth/reset-password", {
-        email,
+        token,
         newPassword,
       });
       setMessage(res.data.message);
-      // Password reset ke baad login page pe redirect
       setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
       console.log(err);
@@ -60,3 +58,4 @@ const ResetPassword = () => {
 };
 
 export default ResetPassword;
+

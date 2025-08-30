@@ -1,21 +1,34 @@
-import React from "react";
+// src/pages/Signup.js
+import React, { useState } from "react";
 import { useFormik } from "formik";
-import axios from "axios";   // axios import
+import axios from "axios";
+import ReCAPTCHA from "react-google-recaptcha";  
+import { ToastContainer, toast } from "react-toastify"; 
+import "react-toastify/dist/ReactToastify.css";
 import "../auth.css";
 
 const Signup = () => {
+  const [captchaToken, setCaptchaToken] = useState(null);
+
   const formik = useFormik({
     initialValues: { name: "", email: "", password: "" },
     onSubmit: async (values) => {
-      try {
-        // backend API call
-        const res = await axios.post("http://localhost:5000/auth/signup", values);
+      if (!captchaToken) {
+        toast.warning("⚠️ Please verify captcha"); // ✅ alert ki jagah toast
+        return;
+      }
 
-        alert(res.data.message || "Signup successful!");
+      try {
+        const res = await axios.post("http://localhost:5000/auth/signup", {
+          ...values,
+          captcha: captchaToken,
+        });
+
+        toast.success(res.data.message || "Signup successful!"); // ✅ success toast
         console.log("Response:", res.data);
       } catch (err) {
         console.error(err);
-        alert(err.response?.data?.message || "Signup failed");
+        toast.error(err.response?.data?.error || "Signup failed"); // ✅ error toast
       }
     },
   });
@@ -46,12 +59,22 @@ const Signup = () => {
             value={formik.values.password}
             onChange={formik.handleChange}
           />
+
+          {/* ✅ Google reCAPTCHA */}
+          <ReCAPTCHA
+            sitekey="6LfjibArAAAAALCy8yOKjcVoAmlbQRBEkki3Vc6P" 
+            onChange={(token) => setCaptchaToken(token)}
+          />
+
           <button type="submit">Signup</button>
         </form>
         <div className="auth-links">
           <a href="/login">Already have an account? Login</a>
         </div>
       </div>
+
+      {/* ✅ Toast container */}
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };
